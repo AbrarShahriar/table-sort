@@ -1,33 +1,65 @@
-import { selector, data, createRow, create, createColumnNames } from "./helper.js"
+import { selector, createRow, create, createColumnNames } from "./helper.js"
 
-window.onload = function() {
+const addDataBtn = selector(".add_data_btn")
+const nameInput = selector("#name")
+const userInput = selector("#input")
+
+// create a table
+const sortedTable = create("table")
+// append it to the dom, we will update the content of this table later
+document.body.append(sortedTable)
+
+
 const table = selector("table")
-const btn = selector("button")
+const btn = selector(".sortBtn")
+
+// initial data
+let data = []
+// initial id count
+let id = 1
+
+// on click add data
+addDataBtn.addEventListener("click", () => {
+  const newData = {
+    id: id,
+    name: nameInput.value,
+    input: parseInt(userInput.value)
+  }
+  
+  data.push(newData)
+  showData()
+  
+  id++
+})
 
 // render initial data
-data.forEach(rowData => {
-  table.append(createRow(rowData))
-});
+showData()
+
+function showData() {
+  const columns = ["No.", "Name", "Input"]
+  table.innerHTML = null
+  table.append(createColumnNames(columns))
+ 
+  data.forEach(rowData => {
+    table.append(createRow(rowData))
+  });
+}
+
+function showUpdatedData(sortedData) {
+  const columns = ["No.", "Name", "Input"]
+  sortedTable.innerHTML = null
+  sortedTable.append(createColumnNames(columns))
+ 
+  sortedData.forEach(rowData => {
+    sortedTable.append(createRow(rowData))
+  });
+}
 
 btn.addEventListener("click", () => {
   
   //sort array
-  data.sort((a, b) => b.input - a.input)
+  let sortedData = Array.from(data).sort((a, b) => b.input - a.input)
   
-  //create empty table to show data
-  const sortedTable = create("table")
-  // create colums
-  const columns = ["No.", "Name", "Input"]
-  
-  //append the columns to the table
-  sortedTable.append(createColumnNames(columns))
-
-  //append the sorted data to the table
-  data.forEach(rowData => {
-    sortedTable.append(createRow(rowData))
-  })
-  
-  // append the table to the body
-  document.body.append(sortedTable)
+  // pass the sorted array and show the updated data
+  showUpdatedData(sortedData)
 })
-}
