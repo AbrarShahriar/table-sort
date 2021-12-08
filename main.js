@@ -3,6 +3,10 @@ import { selector, createRow, create, createColumnNames } from "./helper.js"
 const addDataBtn = selector(".add_data_btn")
 const nameInput = selector("#name")
 const userInput = selector("#input")
+const btn = selector(".sortBtn")
+const table = selector("table")
+const saveBtn = selector(".save")
+
 
 // create a table
 const sortedTable = create("table")
@@ -10,13 +14,44 @@ const sortedTable = create("table")
 document.body.append(sortedTable)
 
 
-const table = selector("table")
-const btn = selector(".sortBtn")
+saveBtn.addEventListener("click", () => {
+  
+  // take and show screenshot of the main table
+  // to take screenshot of the sorted table, put sorted table in toPng(sortedTable) like this.
+  domtoimage.toPng(table)
+    .then(function (dataUrl) {
+        var img = new Image();
+        img.src = dataUrl;
+        document.body.appendChild(img);
+    })
+    .catch(function (error) {
+        console.error('oops, something went wrong!', error);
+    });
+    
+    // take and download screenshot of the table
+    domtoimage.toBlob(table)
+    .then(function (blob) {
+        saveAs(blob, 'table.png');
+    });
+    
+
+})
 
 // initial data
-let data = []
+let data = [
+  {
+    id: 1,
+    name: "adib",
+    input: 10
+  },
+  {
+    id: 2,
+    name: "anto",
+    input: 12
+  }
+]
 // initial id count
-let id = 1
+let id = 3
 
 // on click add data
 addDataBtn.addEventListener("click", () => {
